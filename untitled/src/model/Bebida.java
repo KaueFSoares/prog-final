@@ -2,8 +2,8 @@ package model;
 
 public class Bebida extends Produto {
 
-    private boolean quente;
-    private int mls;
+    private final boolean quente;
+    private final int mls;
 
     public Bebida(String nome, double preco, boolean quente, int mls) {
         super(nome, preco);

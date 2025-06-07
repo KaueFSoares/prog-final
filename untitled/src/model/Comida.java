@@ -2,9 +2,9 @@ package model;
 
 public class Comida extends Produto {
 
-    private boolean salgado;
-    private boolean acompanhamento;
-    private boolean quente;
+    private final boolean salgado;
+    private final boolean acompanhamento;
+    private final boolean quente;
 
     public Comida(String nome, double preco, boolean salgado, boolean acompanhamento, boolean quente) {
         super(nome, preco);
