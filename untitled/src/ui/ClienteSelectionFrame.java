@@ -1,6 +1,8 @@
 package ui;
 
+import model.Bebida;
 import model.Cliente;
+import model.Comida;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,18 +12,22 @@ import java.util.List;
 public class ClienteSelectionFrame extends JFrame {
 
     private static List<Cliente> clientes = Arrays.asList(
-            new Cliente("Cliente A", Arrays.asList(
-                    new model.Comida("Hamburguer", 25.0, true, false, true),
-                    new model.Comida("Pao de Queijo", 5.0, true, false, true),
-                    new model.Comida("Sanduiche", 7, true, false, true),
-                    new model.Bebida("Coca-Cola", 7.0, false, 350),
-                    new model.Bebida("Suco de Laranja", 7.0, false, 350),
-                    new model.Bebida("a", 7.0, false, 350)
-            )),
-            new Cliente("Cliente B", Arrays.asList(
-                    new model.Comida("Salada", 18.0, true, true, false),
-                    new model.Bebida("Suco Natural", 10.0, false, 300)
-            ))
+            new Cliente("Tiririca", Arrays.asList(
+                    new Comida("Hamburguer", 25.0, true, false, true),
+                    new Comida("Pao de Queijo", 5.0, true, false, true),
+                    new Comida("Sanduiche", 7, true, false, true),
+                    new Bebida("Coca-Cola", 7.0, false, 350),
+                    new Bebida("Suco de Laranja", 7.0, false, 350),
+                    new Bebida("Suco de granola", 7.0, false, 350)
+            ),
+                    "resources/images/tiririca.png"
+            ),
+            new Cliente("Point", Arrays.asList(
+                    new Comida("Chocolate Nestle", 9.0, false, false, false),
+                    new Bebida("Chocolate quente", 7.5, true, 300)
+            ),
+                    "resources/images/point.png"
+            )
     );
 
     public ClienteSelectionFrame() {

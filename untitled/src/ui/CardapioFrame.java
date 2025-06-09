@@ -4,12 +4,12 @@ import model.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CardapioFrame extends JFrame {
 
-    private Cliente cliente;
     private List<ItemPedido> itensSelecionados = new ArrayList<>();
     private JPanel pedidoPanel;
     private DefaultListModel<ItemPedido> pedidoListModel;
@@ -17,22 +17,17 @@ public class CardapioFrame extends JFrame {
     private JLabel totalLabel;
 
     public CardapioFrame(Cliente cliente) {
-        this.cliente = cliente;
-
         setTitle(cliente.getNome());
-        setSize(1000, 700);
+        setSize(1200, 700);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        ImageIcon logoOriginal = new ImageIcon(getClass().getClassLoader().getResource("resources/images/logo.png"));
-        Image imagemRedimensionada = logoOriginal.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
-        ImageIcon logo = new ImageIcon(imagemRedimensionada);
+        ImageIcon logo = getImageIcon(cliente.getLogo(), 200, 200);
         JLabel logoLabel = new JLabel(logo);
         logoLabel.setHorizontalAlignment(JLabel.CENTER);
         add(logoLabel, BorderLayout.NORTH);
 
-        JPanel produtosPanel = new JPanel(new GridLayout(0, 3, 20, 20));
-        produtosPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        JPanel produtosPanel = new JPanel(new GridLayout(0, 5, 20, 20));
 
         for (Produto produto : cliente.getCardapio()) {
             JPanel produtoCard = criarProdutoCard(produto);
@@ -62,11 +57,11 @@ public class CardapioFrame extends JFrame {
 
         finalizarPedidoButton.addActionListener(e -> {
             if (!itensSelecionados.isEmpty()) {
-                Pedido pedido = new Pedido(new ArrayList<>(itensSelecionados));
+                Pedido pedido = new Pedido(itensSelecionados);
                 this.setVisible(false);
                 new PedidosFrame(pedido, this).setVisible(true);
             } else {
-                JOptionPane.showMessageDialog(this, "Seu pedido está vazio.");
+                JOptionPane.showMessageDialog(this, "Pedido está vazio.");
             }
         });
 
@@ -75,18 +70,27 @@ public class CardapioFrame extends JFrame {
         add(pedidoPanel, BorderLayout.SOUTH);
     }
 
+    private ImageIcon getImageIcon(String path, int width, int height) {
+        URL url = getClass().getClassLoader().getResource(path);
+
+        URL nullImage = getClass().getClassLoader().getResource("resources/images/null.png");
+
+        if (nullImage == null)
+            throw new RuntimeException("Imagem padrão não encontrada: " + path);
+
+        ImageIcon originalIcon = url != null ? new ImageIcon(url) : new ImageIcon(nullImage);
+
+        Image image = originalIcon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+
+        return new ImageIcon(image);
+    }
+
     private JPanel criarProdutoCard(Produto produto) {
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setPreferredSize(new Dimension(300, 400));
+        panel.setPreferredSize(new Dimension(150, 200));
 
         String nomeImagem = "resources/images/" + produto.getNome().toLowerCase().replace(" ", "-") + ".png";
-        java.net.URL imagemUrl = getClass().getClassLoader().getResource(nomeImagem);
-
-        if (imagemUrl == null) {
-            imagemUrl = getClass().getClassLoader().getResource("resources/images/null.png");
-        }
-
-        ImageIcon icon = new ImageIcon(imagemUrl);
+        ImageIcon icon = getImageIcon(nomeImagem, 100, 100);
 
         JLabel imagemLabel = new JLabel(icon);
         imagemLabel.setPreferredSize(new Dimension(300, 300));
