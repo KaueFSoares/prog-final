@@ -1,7 +1,6 @@
 package ui;
 
 import model.Pedido;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -53,17 +52,22 @@ public class PedidosFrame extends JFrame {
         JPanel botaoPanel = new JPanel();
         botaoPanel.setBackground(new Color(211, 211, 211));
         botaoPanel.add(novoPedidoButton);
-
         add(botaoPanel, BorderLayout.SOUTH);
     }
 
     private void atualizarPedidos() {
         pedidosPanel.removeAll();
 
+        List<Pedido> pedidosParaRemover = new ArrayList<>();
+
         for (Pedido pedido : todosPedidos) {
-            JPanel pedidoCard = criarPedidoCard(pedido);
-            pedidosPanel.add(pedidoCard);
+
+                JPanel pedidoCard = criarPedidoCard(pedido);
+                pedidosPanel.add(pedidoCard);
+
         }
+
+        todosPedidos.removeAll(pedidosParaRemover);
 
         pedidosPanel.revalidate();
         pedidosPanel.repaint();
@@ -73,35 +77,32 @@ public class PedidosFrame extends JFrame {
         JPanel card = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 10));
         card.setBackground(new Color(211, 211, 211));
 
-        JLabel infoPedido = new JLabel("#" + pedido.getNumero() + " " + (pedido.isPronto() ? "FINALIZADO" : "EM ANDAMENTO"));
+        JLabel infoPedido = new JLabel("Pedido #" + pedido.getNumero() + " - " + formatarStatus(pedido.getStatus()));
         infoPedido.setFont(new Font("Arial", Font.BOLD, 18));
 
-        JButton finalizarButton = new JButton("FINALIZAR");
-        finalizarButton.setBackground(new Color(0, 200, 0));
-        finalizarButton.setForeground(Color.WHITE);
-        finalizarButton.setFont(new Font("Arial", Font.BOLD, 16));
-
-        finalizarButton.addActionListener(e -> {
-            pedido.setPronto(true);
-            atualizarPedidos();
-        });
-
-        JButton removerButton = new JButton("REMOVER");
-        removerButton.setBackground(new Color(255, 69, 0));
-        removerButton.setForeground(Color.WHITE);
-        removerButton.setFont(new Font("Arial", Font.BOLD, 16));
-
-        removerButton.addActionListener(e -> {
-            todosPedidos.remove(pedido);
-            atualizarPedidos();
-        });
-
         card.add(infoPedido);
-        if (!pedido.isPronto()) {
-            card.add(finalizarButton);
+        if(pedido.getStatus() != Pedido.Status.ENTREGUE){
+            JButton atualizarStatusButton = new JButton("Atualizar Status");
+            atualizarStatusButton.setBackground(new Color(255, 140, 0));
+            atualizarStatusButton.setForeground(Color.WHITE);
+            atualizarStatusButton.setFont(new Font("Arial", Font.BOLD, 16));
+
+            atualizarStatusButton.addActionListener(e -> {
+                pedido.avancarStatus();
+                atualizarPedidos();
+            });
+            card.add(atualizarStatusButton);
         }
-        card.add(removerButton);
+
 
         return card;
+    }
+
+    private String formatarStatus(Pedido.Status status) {
+        return switch (status) {
+            case EM_PREPARO -> "EM PREPARO";
+            case PRONTO -> "PRONTO";
+            case ENTREGUE -> "ENTREGUE";
+        };
     }
 }

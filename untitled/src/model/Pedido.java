@@ -8,11 +8,26 @@ public class Pedido {
 
     private final String numero;
     private final List<ItemPedido> items;
-    private boolean pronto = false;
+    private Status status;
+
+    public enum Status {
+        EM_PREPARO,
+        PRONTO,
+        ENTREGUE
+    }
 
     public Pedido(List<ItemPedido> items) {
         this.numero = String.valueOf(contadorPedidos++);
         this.items = items;
+        this.status = Status.EM_PREPARO;
+    }
+
+    public String getNumero() {
+        return numero;
+    }
+
+    public List<ItemPedido> getItems() {
+        return items;
     }
 
     public double getTotal() {
@@ -21,21 +36,21 @@ public class Pedido {
                 .reduce(0.0, Double::sum);
     }
 
-    public boolean isPronto() {
-        return pronto;
+    public Status getStatus() {
+        return status;
     }
 
-    public void setPronto(boolean pronto) {
-        this.pronto = pronto;
-    }
-
-    public String getNumero() {
-        return numero;
+    public void avancarStatus() {
+        switch (status) {
+            case EM_PREPARO -> status = Status.PRONTO;
+            case PRONTO -> status = Status.ENTREGUE;
+            // ENTREGUE será tratado fora como sinal para remoção
+        }
     }
 
     @Override
     public String toString() {
-        return "Pedido #" + numero + " - " + (pronto ? "Finalizado" : "Em preparação") +
+        return "Pedido #" + numero + " - " + status +
                 " - " + items.size() + " itens - Total: R$" + String.format("%.2f", getTotal());
     }
 }
