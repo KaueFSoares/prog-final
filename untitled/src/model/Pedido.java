@@ -33,10 +33,6 @@ public class Pedido {
         return numero;
     }
 
-    public List<ItemPedido> getItems() {
-        return items;
-    }
-
     @Override
     public String toString() {
         return "Pedido #" + numero + " - " + (pronto ? "Finalizado" : "Em preparação") +
